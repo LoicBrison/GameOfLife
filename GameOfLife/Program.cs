@@ -8,7 +8,7 @@ namespace GameOfLife
         static void Main()
         {
             Application.EnableVisualStyles();
-            Application.Run(new Form()); // or whatever
+            Application.Run(new ScreenOfLife()); // or whatever
         }
     }
 }
