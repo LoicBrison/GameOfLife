@@ -11,7 +11,7 @@
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="NumpyDotNet" Version="0.9.86.2" />
+	  <PackageReference Include="Numpy" Version="3.11.1.33" />
 	</ItemGroup>
 </Project>
 

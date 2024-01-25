@@ -1,5 +1,4 @@
-﻿using NumpyDotNet;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace GameOfLife

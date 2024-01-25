@@ -1,7 +1,7 @@
-﻿using NumpyDotNet;
+﻿using Numpy;
+using Numpy.Models;
 using Brush = System.Drawing.Brush;
 using Color = System.Drawing.Color;
-using np = NumpyDotNet.np;
 
 namespace GameOfLife
 {
@@ -10,17 +10,16 @@ namespace GameOfLife
         const int R = 13;
         const double dt = 0.1;
 
-        private ndarray k_lenia;
+        private NDarray k_lenia;
 
-        ndarray Cells { get; set; }
+        NDarray Cells { get; set; }
         public override void Initialize(int nbCol, int nbRow, int delay, Canvas canvas)
         {
             this.Canvas = canvas;
             this.Delay = delay;
             this.k_lenia = this.InitLeniaFilter();
 
-            var random = new np.random();
-            Cells = random.rand(new shape(nbCol, nbRow));
+            Cells = np.random.rand(new int[] { nbCol, nbRow });
             //Cells = np.array(new double[,] {
             //    { 0, 0, 0, 0, 0, 0, 0.1, 0.14, 0.1, 0, 0, 0.03, 0.03, 0, 0, 0.3, 0, 0, 0, 0 },
             //    {0, 0, 0, 0, 0, 0.08, 0.24, 0.3, 0.3, 0.18, 0.14, 0.15, 0.16, 0.15, 0.09, 0.2, 0, 0, 0, 0},
@@ -81,8 +80,9 @@ namespace GameOfLife
                 return;
             }
 
-            var colSize = this.Canvas.Width / Cells.Dim(0);
-            var rowSize = this.Canvas.Height / Cells.Dim(1);
+            
+            var colSize = this.Canvas.Width / Cells.shape.Dimensions[0];
+            var rowSize = this.Canvas.Height / Cells.shape.Dimensions[1];
 
             int rMax = Color.Red.R;
             int rMin = Color.Black.R;
@@ -93,9 +93,9 @@ namespace GameOfLife
             int bMax = Color.Blue.B;
             int bMin = Color.Black.B;
 
-            for (int i = 0; i < Cells.Dim(0); i++) //X
+            for (int i = 0; i < Cells.shape.Dimensions[0]; i++) //X
             {
-                for (int j = 0; j < Cells.Dim(1); j++) //Y
+                for (int j = 0; j < Cells.shape.Dimensions[1]; j++) //Y
                 {
                     //var r = rMin + (int)((rMax - rMin) * (double) Cells[i, j] / 1);
                     //var g = gMin + (int)((gMax - gMin) * (double) Cells[i, j] / 1);
@@ -108,45 +108,46 @@ namespace GameOfLife
             }
         }
 
-        protected ndarray Gauss(ndarray x, double mu, double sigma)
+        protected NDarray Gauss(NDarray x, double mu, double sigma)
         {
-            return np.exp(-0.5 * np.power(((x - mu) / sigma), 2));
+            return np.exp(-0.5 * np.power(((x - mu) / sigma), (NDarray)2));
         }
 
-        public ndarray InitLeniaFilter()
+        public NDarray InitLeniaFilter()
         {
+            var x = np.arange(-R, R, 1);
+            var y = np.arange(-R, R, 1);
+            
+            x = x.reshape(-1, 1);  //Column vector
+            y = y.reshape(1, -1);
 
-            var t = np.ogrid(new Slice[] { new Slice(-R, R), new Slice(-R, R) });
-            var x = (t as ndarray[])[0];
-            var y = (t as ndarray[])[1];
-
-            var distance = np.sqrt(np.power(1 + x, 2) + np.power(1 + y, 2)) / R;
+            var distance = np.sqrt(np.power(1 + x, (NDarray)2) + np.power(1 + y, (NDarray)2)) / R;
 
             var mu = 0.5;
             var sigma = 0.15;
             var K = this.Gauss(distance, mu, sigma);
-            K[distance > 1] = 0;
+            K[distance > 1] = (NDarray)0;
             K = K / np.sum(K);
 
             return K;
         }
 
-        public ndarray Growth(ndarray u)
+        public NDarray Growth(NDarray u)
         {
             var mu = 0.15;
             var sigma = 0.015;
             return -1 + 2 * this.Gauss(u, mu, sigma);
         }
 
-        public ndarray Evolve(ndarray X)
+        public NDarray Evolve(NDarray X)
         {
-            var U = this.Convolve2d(X, this.k_lenia);
+            var U = this.Convolve2d_2(X, this.k_lenia);
             X = X + dt * this.Growth(U);
-            X = np.clip(X, 0, 1);
+            X = np.clip(X, (NDarray)0, (NDarray)1);
             return X;
         }
 
-        private ndarray Convolve2d(ndarray X, ndarray K)
+        private NDarray Convolve2d(NDarray X, NDarray K)
         {
             var rows = X.shape[0];
             var cols = X.shape[1];
@@ -158,7 +159,7 @@ namespace GameOfLife
 
             var padHeight = kRows - 1;
             var padWidth = kCols - 1;
-            var paddedInput = np.zeros(new shape(rows + (2 * padHeight), cols + (2 * padWidth)));
+            var paddedInput = np.zeros(new Shape(rows + (2 * padHeight), cols + (2 * padWidth)));
             paddedInput[new Slice(padHeight, rows + padHeight), new Slice(padWidth, cols + padWidth)] = X;
 
             for (int i = 0; i < rows; i++)
@@ -175,10 +176,8 @@ namespace GameOfLife
             return output;
         }
 
-        private ndarray Convolve2d_2(ndarray X, ndarray K)
+        private NDarray Convolve2d_2(NDarray X, NDarray K)
         {
-            K = np.flipud(K);
-
             var rows = X.shape[0];
             var cols = X.shape[1];
 
@@ -187,12 +186,11 @@ namespace GameOfLife
 
             var output = np.zeros_like(X);
 
-            var padHeight = (long) np.floor_divide(kRows - 1,2);
-            var padWidth = (long)np.floor_divide(kCols - 1, 2);
+            var padHeight = (int) np.floor_divide((NDarray)kRows, (NDarray)2);
+            var padWidth = (int) np.floor_divide((NDarray)kCols, (NDarray)2);
 
-            var paddedInput = np.zeros(new shape(rows + (2 * padHeight), cols + (2 * padWidth)));
-            paddedInput[new Slice(padHeight, rows + padHeight), new Slice(padWidth, cols + padWidth)] = X;
-            //padded_input[x_pad: padded_input.shape[0] - x_pad, y_pad: padded_input.shape[1] - y_pad] = input_array
+            var ndarray = np.array(new int[,] { { padHeight, padHeight }, { padWidth, padWidth } });
+            var paddedInput = np.pad(X, ndarray, "wrap");
 
             for (int i = 0; i < rows; i++)
             {
@@ -200,8 +198,8 @@ namespace GameOfLife
                 {
                     var xSlice = new Slice(i, i + kRows);
                     var ySlice = new Slice(j, j + kCols);
-                    var tmp = paddedInput[xSlice, ySlice] * K;
-                    output[i, j] = np.sum(tmp);
+                    var region = paddedInput[xSlice, ySlice];
+                    output[i, j] = np.sum(region * K);
                 }
             }
 
