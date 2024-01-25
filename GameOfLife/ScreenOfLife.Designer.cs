@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(ScreenOfLife));
-            this.canvasOfLife = new Canvas();
             this.label1 = new Label();
             this.label2 = new Label();
             this.label3 = new Label();
@@ -41,19 +40,12 @@
             this.radioButton1 = new RadioButton();
             this.radioButton2 = new RadioButton();
             this.label4 = new Label();
+            this.plotView1 = new OxyPlot.WindowsForms.PlotView();
+            this.canvasOfLife = new Canvas();
             ((System.ComponentModel.ISupportInitialize)this.numericUpDownColNb).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.numericUpDownRowNb).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.numericUpDownDelay).BeginInit();
             this.SuspendLayout();
-            // 
-            // canvasOfLife
-            // 
-            this.canvasOfLife.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            this.canvasOfLife.Location = new Point(12, 11);
-            this.canvasOfLife.Name = "canvasOfLife";
-            this.canvasOfLife.Size = new Size(662, 427);
-            this.canvasOfLife.TabIndex = 0;
-            this.canvasOfLife.Text = "canvas1";
             // 
             // label1
             // 
@@ -174,11 +166,33 @@
             this.label4.TabIndex = 16;
             this.label4.Text = "Simulation ";
             // 
+            // plotView1
+            // 
+            this.plotView1.Location = new Point(12, 12);
+            this.plotView1.Name = "plotView1";
+            this.plotView1.PanCursor = Cursors.Hand;
+            this.plotView1.Size = new Size(653, 426);
+            this.plotView1.TabIndex = 17;
+            this.plotView1.Text = "plotView1";
+            this.plotView1.ZoomHorizontalCursor = Cursors.SizeWE;
+            this.plotView1.ZoomRectangleCursor = Cursors.SizeNWSE;
+            this.plotView1.ZoomVerticalCursor = Cursors.SizeNS;
+            // 
+            // canvasOfLife
+            // 
+            this.canvasOfLife.Location = new Point(12, 12);
+            this.canvasOfLife.Name = "canvasOfLife";
+            this.canvasOfLife.Size = new Size(662, 426);
+            this.canvasOfLife.TabIndex = 18;
+            this.canvasOfLife.Text = "canvas1";
+            // 
             // ScreenOfLife
             // 
             this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(800, 450);
+            this.Controls.Add(this.canvasOfLife);
+            this.Controls.Add(this.plotView1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
@@ -190,7 +204,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.canvasOfLife);
             this.Icon = (Icon)resources.GetObject("$this.Icon");
             this.Name = "ScreenOfLife";
             this.Text = "GameOfMelvin";
@@ -215,5 +228,6 @@
         private RadioButton radioButton1;
         private RadioButton radioButton2;
         private Label label4;
+        private OxyPlot.WindowsForms.PlotView plotView1;
     }
 }

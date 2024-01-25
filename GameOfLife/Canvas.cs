@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxyPlot.WindowsForms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +12,7 @@ using Color = System.Windows.Media.Color;
 
 namespace GameOfLife
 {
-    internal class Canvas : Control
+    internal class Canvas : System.Windows.Forms.Control
     {
         private Simulation simulation;
 
@@ -22,9 +23,14 @@ namespace GameOfLife
             ControlStyles.OptimizedDoubleBuffer, true);
         }
 
-        public void Initialize(int nbCol, int nbRow, int delay, bool isGameOfLife)
+        public void Initialize(int nbCol, int nbRow, int delay, bool isGameOfLife, PlotView plotView)
         {
             this.simulation = isGameOfLife ? new GameOfLife() : new Lenia();
+            if(this.simulation is Lenia)
+            {
+                ((Lenia)this.simulation).PlotView = plotView;
+                this.Visible = false;
+            }
             this.simulation?.Initialize(nbCol, nbRow, delay, this);
         }
 

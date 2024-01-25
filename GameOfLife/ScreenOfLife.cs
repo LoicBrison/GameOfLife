@@ -22,7 +22,8 @@ namespace GameOfLife
             this.canvasOfLife.Initialize((int)this.numericUpDownColNb.Value, 
                 (int)this.numericUpDownRowNb.Value, 
                 (int)this.numericUpDownDelay.Value,
-                this.radioButton1.Checked);
+                this.radioButton1.Checked,
+                this.plotView1);
 
             this.canvasOfLife.Start();
         }

@@ -9,9 +9,12 @@
 		<ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
 		<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
 		<PlatformTarget>AnyCPU</PlatformTarget>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 	<ItemGroup>
 	  <PackageReference Include="Numpy" Version="3.11.1.33" />
+	  <PackageReference Include="OxyPlot.Core" Version="2.1.2" />
+	  <PackageReference Include="OxyPlot.WindowsForms" Version="2.1.2" />
 	</ItemGroup>
 </Project>
 
