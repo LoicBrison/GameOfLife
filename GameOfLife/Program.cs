@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using NumpyDotNet;
+using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 
 namespace GameOfLife
 {
@@ -10,5 +12,7 @@ namespace GameOfLife
             Application.EnableVisualStyles();
             Application.Run(new ScreenOfLife()); // or whatever
         }
+
+       
     }
 }
